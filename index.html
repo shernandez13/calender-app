@@ -1,30 +1,54 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendar App</title>
+  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <title>Calender App</title>
-</head> 
-
+</head>
 <body>
-  <div class="calendar">
-    <div class="header">
-      <div id="prev" class="btn"><i class="fa-solid fa-arrow-left"></i></div>
-      <div id="month-year"></div>
-      <div id="next" class="btn"><i class="fa-solid fa-arrow-right"></i></div>
-  </div>
-    <div class="weekdays">
-      <div>Sun</div>
-      <div>Mon</div>
-      <div>Tue</div>
-      <div>Wed</div>
-      <div>Thu</div>
-      <div>Fri</div>
-      <div>Sat</div>
-    </div>
-    <div class="days" id="days"></div>
-  </div>
-  <script src="script.js"></script>
+  <header class="container">
+    <h1>Campus Events Calendar</h1>
+    <p class="subtle">Browse months and filter events.</p>
+    <nav aria-label="Event filters">
+      <form id="filters" class="filters" role="search">
+        <fieldset>
+          <legend>Categories</legend>
+          <label><input type="checkbox" name="category" value="workshop" checked> Workshop</label>
+          <label><input type="checkbox" name="category" value="sports" checked> Sports</label>
+          <label><input type="checkbox" name="category" value="club" checked> Club</label>
+        </fieldset>
+        <label class="search">
+          <span class="sr-only">Search titles</span>
+          <input id="q" type="search" placeholder="Search titles…" />
+        </label>
+      </form>
+    </nav>
+  </header>
+
+  <main class="container" aria-label="Calendar application">
+    <section class="calendar" role="region" aria-labelledby="month-year">
+      <div class="header">
+        <button id="prev" class="btn" aria-label="Previous month"><i class="fa-solid fa-arrow-left"></i></button>
+        <h2 id="month-year" aria-live="polite"></h2>
+        <button id="next" class="btn" aria-label="Next month"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+
+      <div class="weekdays" aria-hidden="true">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+
+      <div class="days" id="days" role="grid" aria-readonly="true"></div>
+    </section>
+
+    <aside aria-label="Selected day events" class="aside">
+      <h3 id="dayLabel">Select a day</h3>
+      <ul id="eventList" class="events"></ul>
+    </aside>
+  </main>
+
+  <footer class="container"><small>© 2025 Your Name • HTML, CSS & JavaScript</small></footer>
+  <script src="script.js" defer></script>
 </body>
+</html>

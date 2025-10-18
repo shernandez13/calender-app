@@ -1,58 +1,154 @@
-body {
-  font-family: Arial, sans-serif;
+/* ===== Calendar App – CSS (replace your file with this) ===== */
+:root{
+  --bg: #2f2f2f;         /* page background */
+  --panel: #111111;      /* calendar background */
+  --ink: #ffffff;        /* primary text */
+  --muted: #9ca3af;      /* secondary text */
+  --line: #222222;       /* subtle borders */
+  --accent: #ff7a3d;     /* highlight color (today / focus) */
+  --gap: 10px;           /* base spacing */
+  --radius: 10px;        /* rounded corners */
+  --shadow: 0 20px 60px rgba(0,0,0,.35);
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body{
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  background: radial-gradient(1200px 600px at 50% -20%, #3a3a3a 0%, var(--bg) 60%);
   display: grid;
   place-items: center;
-  height: 100vh;
-  margin: 0;
-  background-color: #333333;
+  padding: 24px;
 }
-  .calendar {
-    background-color: #111111;
-    border-radius: 10px;
-    box-shadow: 0 0 30px #222222;
-    overflow: hidden;
-    width: 300px;
-    color: white;
-    padding: 20px;
-  }
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    }
-  .btn {
-    cursor: pointer;
-    }
-  #month-year {
-    font-weight: bold;
-    font-size: 20px;
-  }
-  .weekdays, .days {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .days {
-    height: 210px;
-    }
-  .weekdays div, .days div {
-    width: 14.28%;
-    text-align: center;
-    padding: 10px 0;
-    border-radius: 5px;
-    }
-  .days div {
-    cursor: pointer;
-    transition: background-color 0.3s;
-    }
-  .days div:hover {
-    background-color: white;
-    color: orangered;
-    }
-  .days .today {
-    background-color: orangered;
-    color: white;
-    }
-  .days .fade {
-    color: #555;
-    }
+
+/* --- Calendar Card --- */
+.calendar{
+  background: var(--panel);
+  color: var(--ink);
+  width: min(92vw, 420px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  padding: 20px;
+}
+
+/* Header with month + arrows */
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  margin-bottom: 12px;
+}
+
+#month-year{
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+/* Previous/Next controls (works whether they're <div> or <button>) */
+.btn{
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform .08s ease, background-color .15s ease, border-color .15s ease;
+  user-select: none;
+}
+
+.btn:hover{ background: #181818; border-color: #2a2a2a; }
+.btn:active{ transform: translateY(1px) scale(.98); }
+.btn:focus{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* --- Weekday row + days grid --- */
+.weekdays,
+.days{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--gap);
+}
+
+.weekdays{
+  margin: 6px 0 8px;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: none;
+}
+
+.weekdays > div{
+  text-align: center;
+  padding: 6px 0;
+}
+
+/* Day cells */
+.days{
+  /* maintains nice spacing on all screens */
+  margin-bottom: 4px;
+}
+
+.days div{
+  position: relative;
+  min-height: 70px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #0f0f0f;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10px;
+  font-weight: 600;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
+  cursor: pointer;
+}
+
+.days div:hover{
+  background: #161616;
+  border-color: #2a2a2a;
+}
+
+.days div:focus{
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Today highlight */
+.days .today{
+  background: var(--accent);
+  color: #111;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px rgba(255,122,61,.25);
+}
+
+/* Days from prev/next month */
+.days .fade{
+  color: #6b7280;         /* muted gray */
+  background: #0c0c0c;
+  border-color: #1a1a1a;
+}
+
+/* --- Responsive tweaks --- */
+@media (max-width: 520px){
+  .calendar{ width: 100%; padding: 16px; }
+  #month-year{ font-size: 20px; }
+  .btn{ width: 36px; height: 36px; border-radius: 8px; }
+  .days div{ min-height: 58px; border-radius: 8px; }
+  .weekdays{ font-size: 12px; }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .btn{ transition: none; }
+  .days div{ transition: none; }
+}
