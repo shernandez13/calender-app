@@ -176,3 +176,27 @@ footer.container{ margin-top: 30px; opacity:.85; }
 @media (prefers-reduced-motion: reduce){
   .btn, .days > .day{ transition: none; }
 }
+
+/* --- Selection & today ring (add at end) --- */
+
+/* Orange fill for the user's current selection */
+.days > .day.selected,
+.days > .day.selected:hover,
+.days > .day.selected:focus-visible{
+  background: var(--today) !important;
+  color: #fff !important;
+}
+
+/* Subtle ring for the actual current day (informational only) */
+.days > .day.is-today{
+  box-shadow: inset 0 0 0 2px rgba(255,106,42,.35);
+}
+
+/* Padding cells shouldn't act clickable */
+.days > .day.fade{
+  color: #555;
+  pointer-events: none; /* ignore clicks */
+}
+
+/* Remove the subtle ring on the real current day */
+.days > .day.is-today{ box-shadow: none !important; }
