@@ -1,238 +1,178 @@
-/* ===== Calendar App – CSS (replace your file with this) ===== */
+/* ---------- Design tokens ---------- */
 :root{
-  --bg: #2f2f2f;         /* page background */
-  --panel: #111111;      /* calendar background */
-  --ink: #ffffff;        /* primary text */
-  --muted: #9ca3af;      /* secondary text */
-  --line: #222222;       /* subtle borders */
-  --accent: #ff7a3d;     /* highlight color (today / focus) */
-  --gap: 10px;           /* base spacing */
-  --radius: 10px;        /* rounded corners */
-  --shadow: 0 20px 60px rgba(0,0,0,.35);
+  /* colors */
+  --bg: #2f2f2f;
+  --panel: #111111;
+  --ink: #ffffff;
+  --muted: #9ca3af;
+  --line: #202020;
+  --today: #ff6a2a;
+
+  /* layout */
+  --radius: 14px;
+  --shadow: 0 0 30px #222222;
+
+  /* calendar sizing */
+  --cal-width: 640px;   /* try 300–760px */
+  --cell-h: 58px;       /* height of each day cell; increase to make it longer */
+  --gap: 12px;
 }
 
+/* ---------- Base ---------- */
 * { box-sizing: border-box; }
-
 html, body { height: 100%; }
-
 body{
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   color: var(--ink);
   background: radial-gradient(1200px 600px at 50% -20%, #3a3a3a 0%, var(--bg) 60%);
-  display: grid;
-  place-items: center;
-  padding: 24px;
 }
 
-/* --- Calendar Card --- */
+/* Screen reader utility */
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+/* ---------- Page containers ---------- */
+.container{ width:min(1100px, 92vw); margin-inline:auto; }
+header.container{ padding: 24px 0 6px; }
+main.container{
+  display:grid; grid-template-columns: 1fr 340px; gap: 28px; align-items:start;
+  padding-bottom: 28px;
+}
+@media (max-width: 900px){
+  main.container{ grid-template-columns: 1fr; }
+}
+
+/* ---------- Filters/search (kept from your HTML) ---------- */
+.filters{
+  display:flex; flex-wrap:wrap; align-items:center; gap: 12px;
+  background: rgba(0,0,0,.30);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+.filters fieldset{ border:0; margin:0; padding:0; display:flex; gap:10px; flex-wrap:wrap; }
+.filters label{ display:flex; gap:6px; align-items:center; }
+.search input{
+  padding:8px 10px; border-radius:10px; border:1px solid var(--line);
+  background:#0b0b0b; color:var(--ink);
+}
+
+/* ---------- Calendar card ---------- */
 .calendar{
+  width: min(100%, var(--cal-width));
+  margin-inline: auto;
   background: var(--panel);
-  color: var(--ink);
-  width: min(92vw, 420px);
+  color: #fff;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  border: 1px solid var(--line);
   padding: 20px;
+  border: 1px solid var(--line);
 }
 
-/* Header with month + arrows */
-.header{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gap);
-  margin-bottom: 12px;
+/* Month header (arrows + title) */
+.calendar .header{
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 6px 4px 12px;
 }
-
 #month-year{
-  margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: .3px;
+  margin:0;
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: .2px;
 }
-
-/* Previous/Next controls (works whether they're <div> or <button>) */
 .btn{
+  background: transparent;
+  color: #fff;
+  border: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--ink);
   cursor: pointer;
-  transition: transform .08s ease, background-color .15s ease, border-color .15s ease;
-  user-select: none;
+  transition: background-color .15s ease, transform .06s ease;
 }
+.btn:hover{ background:#1a1a1a; }
+.btn:active{ transform: translateY(1px) scale(.99); }
+.btn:focus-visible{ outline:2px solid var(--today); outline-offset:2px; }
 
-.btn:hover{ background: #181818; border-color: #2a2a2a; }
-.btn:active{ transform: translateY(1px) scale(.98); }
-.btn:focus{ outline: 2px solid var(--accent); outline-offset: 2px; }
-
-/* --- Weekday row + days grid --- */
+/* Weekdays + days grid */
 .weekdays,
 .days{
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: var(--gap);
+  column-gap: 0;            /* compact columns like the mock */
+  row-gap: var(--gap);      /* vertical rhythm */
 }
-
 .weekdays{
-  margin: 6px 0 8px;
-  color: var(--muted);
-  font-weight: 600;
-  font-size: 13px;
-  text-transform: none;
-}
-
-.weekdays > div{
+  padding: 6px 0 8px;
+  opacity: .95;
+  font-weight: 700;
   text-align: center;
-  padding: 6px 0;
 }
+.weekdays > div{ text-align:center; }
 
-/* Day cells */
+/* Uniform day cells */
 .days{
-  /* maintains nice spacing on all screens */
-  margin-bottom: 4px;
+  grid-auto-rows: var(--cell-h);  /* every cell same height */
 }
-
-.days div{
-  position: relative;
-  min-height: 70px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: #0f0f0f;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 10px;
-  font-weight: 600;
-  transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
-  cursor: pointer;
-}
-
-.days div:hover{
-  background: #161616;
-  border-color: #2a2a2a;
-}
-
-.days div:focus{
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Today highlight */
-.days .today{
-  background: var(--accent);
-  color: #111;
-  border-color: transparent;
-  box-shadow: 0 0 0 2px rgba(255,122,61,.25);
-}
-
-/* Days from prev/next month */
-.days .fade{
-  color: #6b7280;         /* muted gray */
-  background: #0c0c0c;
-  border-color: #1a1a1a;
-}
-
-/* --- Responsive tweaks --- */
-@media (max-width: 520px){
-  .calendar{ width: 100%; padding: 16px; }
-  #month-year{ font-size: 20px; }
-  .btn{ width: 36px; height: 36px; border-radius: 8px; }
-  .days div{ min-height: 58px; border-radius: 8px; }
-  .weekdays{ font-size: 12px; }
-}
-
-/* Respect users who prefer reduced motion */
-@media (prefers-reduced-motion: reduce){
-  .btn{ transition: none; }
-  .days div{ transition: none; }
-}
-
-/* === Uniform calendar sizing & in-cell events === */
-:root{
-  /* tune this to make the calendar taller/shorter */
-  --day-h: 130px;     /* try 120–160px */
-  --gap: 12px;
-  --radius: 14px;
-}
-
-/* The grid now uses fixed row height so all cells match */
-.days{
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: var(--gap);
-  grid-auto-rows: var(--day-h);   /* 👈 uniform height for every day */
-}
-
-/* Day cell becomes a vertical layout: date number at top-left, events below */
-.days .day{
+.days > .day{
   height: 100%;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color .2s, color .2s, transform .06s ease;
+}
+.days > .day:hover{
+  background: #ffffff;
+  color: var(--today);
+}
+.days > .day:active{ transform: translateY(1px) scale(.99); }
+.days > .day:focus-visible{ outline: 2px solid var(--today); outline-offset: 2px; }
+
+/* Inside a day cell we only show the number (clean mock look) */
+.days > .day .date{ font-weight: 700; }
+.days > .day .titles{ display: none; }   /* details stay in the aside */
+
+/* Out-of-month days and Today */
+.days > .day.fade{ color: #555; }
+.days > .day.today{
+  background: var(--today);
+  color: #fff;
+}
+
+/* ---------- Aside (selected-day events) ---------- */
+.aside{
+  background: rgba(0,0,0,.28);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #0f0f0f;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+#dayLabel{ margin-top:0; margin-bottom:10px; }
+.events{ list-style:none; padding:0; margin:0; display:grid; gap:10px; }
+.events li{
+  padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:#0f0f0f;
   color: var(--ink);
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  position: relative;
-  cursor: pointer;
-  transition: background-color .15s ease, border-color .15s ease, transform .06s ease;
-}
-.days .day:hover{ background:#151515; border-color:#2a2a2a; }
-.days .day:active{ transform: translateY(1px) scale(.99); }
-.days .day:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-
-/* Date number */
-.days .day .date{
-  font-weight: 700;
-  line-height: 1;
-  margin-bottom: 6px;
-  opacity: .95;
 }
 
-/* Titles area — wraps text but stays inside the box */
-.days .day .titles{
-  font-size: 12px;
-  line-height: 1.25;
-  white-space: normal;          /* allow wrapping */
-  word-break: break-word;       /* break long words/URLs */
-  overflow: hidden;             /* keep height uniform */
-  /* Optional: reveal scroll on hover for long lists */
-  max-height: calc(var(--day-h) - 34px); /* box height minus date/spacing */
-}
-.days .day:hover .titles{ overflow: auto; }
+/* ---------- Footer ---------- */
+footer.container{ margin-top: 30px; opacity:.85; }
 
-/* Each title line */
-.days .day .titles .evt{
-  margin-bottom: 4px;
-  color: #cfd3da;
-}
-
-/* Today + out-of-month variants (work with new .day class) */
-.days .day.today{
-  background: linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.08)), var(--accent);
-  color:#111; border-color: transparent;
-  box-shadow: 0 0 0 2px rgba(255,122,61,.25), inset 0 1px 0 rgba(255,255,255,.25);
-}
-.days .day.fade{
-  color:#7b8190; background:#0b0b0b; border-color:#171717;
-}
-
-/* Make the whole calendar “longer” by giving the card more padding/width */
-.calendar{
-  max-width: 900px;   /* wider calendar */
-  padding: 28px;      /* roomier */
-}
-
-/* Responsive: keep the cells sizable on phones too */
+/* ---------- Responsive ---------- */
 @media (max-width: 520px){
-  :root{ --day-h: 110px; }
-  .calendar{ padding: 18px; }
+  :root{ --cal-width: 100%; --cell-h: 52px; }
+  .calendar{ padding: 16px; }
+  #month-year{ font-size: 20px; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  .btn, .days > .day{ transition: none; }
 }
