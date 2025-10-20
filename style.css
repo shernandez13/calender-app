@@ -152,3 +152,87 @@ body{
   .btn{ transition: none; }
   .days div{ transition: none; }
 }
+
+/* === Uniform calendar sizing & in-cell events === */
+:root{
+  /* tune this to make the calendar taller/shorter */
+  --day-h: 130px;     /* try 120–160px */
+  --gap: 12px;
+  --radius: 14px;
+}
+
+/* The grid now uses fixed row height so all cells match */
+.days{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--gap);
+  grid-auto-rows: var(--day-h);   /* 👈 uniform height for every day */
+}
+
+/* Day cell becomes a vertical layout: date number at top-left, events below */
+.days .day{
+  height: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #0f0f0f;
+  color: var(--ink);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, transform .06s ease;
+}
+.days .day:hover{ background:#151515; border-color:#2a2a2a; }
+.days .day:active{ transform: translateY(1px) scale(.99); }
+.days .day:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+/* Date number */
+.days .day .date{
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+  opacity: .95;
+}
+
+/* Titles area — wraps text but stays inside the box */
+.days .day .titles{
+  font-size: 12px;
+  line-height: 1.25;
+  white-space: normal;          /* allow wrapping */
+  word-break: break-word;       /* break long words/URLs */
+  overflow: hidden;             /* keep height uniform */
+  /* Optional: reveal scroll on hover for long lists */
+  max-height: calc(var(--day-h) - 34px); /* box height minus date/spacing */
+}
+.days .day:hover .titles{ overflow: auto; }
+
+/* Each title line */
+.days .day .titles .evt{
+  margin-bottom: 4px;
+  color: #cfd3da;
+}
+
+/* Today + out-of-month variants (work with new .day class) */
+.days .day.today{
+  background: linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.08)), var(--accent);
+  color:#111; border-color: transparent;
+  box-shadow: 0 0 0 2px rgba(255,122,61,.25), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.days .day.fade{
+  color:#7b8190; background:#0b0b0b; border-color:#171717;
+}
+
+/* Make the whole calendar “longer” by giving the card more padding/width */
+.calendar{
+  max-width: 900px;   /* wider calendar */
+  padding: 28px;      /* roomier */
+}
+
+/* Responsive: keep the cells sizable on phones too */
+@media (max-width: 520px){
+  :root{ --day-h: 110px; }
+  .calendar{ padding: 18px; }
+}
